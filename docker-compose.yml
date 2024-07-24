@@ -76,6 +76,7 @@ services:
       - PUID=$PUID
       - PGID=$PGID
       - VERSION=docker
+      - PLEX_CLAIM=${PLEX_CLAIMTOKEN}
     volumes:
       - ${DATADIR}/plex/config:/config
       - ${MOVIES_FOLDER}:/media/Movies
