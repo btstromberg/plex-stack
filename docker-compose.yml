@@ -43,10 +43,11 @@ services:
       - PGID=$PGID
     volumes:
       - ${DATADIR}/sonarr/config:/config
+      - ${TV_FOLDER}:/media/TV
     ports:
       - ${SONARR_PORT}:8989
 
-#---------------- RADARR ------------------#
+#--------------- RADARR -----------------#
 
   radarr:
     <<: *common-keys-media # See EXTENSION FIELDS at the top
@@ -58,8 +59,7 @@ services:
       - PGID=$PGID
     volumes:
       - ${DATADIR}/radarr/config:/config
-#      - /example/Movies:/media/Movies
-#      - /example/TV:/media/TV
+      - ${MOVIES_FOLDER}:/media/Movies
     ports:
       - ${RADARR_PORT}:7878
 
@@ -77,9 +77,9 @@ services:
       - PGID=$PGID
       - VERSION=docker
     volumes:
-      - ${DATADIR}/plex:/config
-#      - /example/Movies:/media/Movies
-#      - /example/TV:/media/TV
+      - ${DATADIR}/plex/config:/config
+      - ${MOVIES_FOLDER}:/media/Movies
+      - ${TV_FOLDER}:/media/TV
     ports:
       - ${PLEX_PORT}:32400
 
@@ -143,9 +143,6 @@ services:
     container_name: bazarr
     volumes:
       - ${DATADIR}/bazarr/config:/config
-#      - /data1/Allt:/media #optional
-#      - /opt/docker/data:/media
-#      - /data1/Allt/Serier:/tv #optional
     ports:
       - ${BAZARR_PORT}:6767
     restart: unless-stopped
