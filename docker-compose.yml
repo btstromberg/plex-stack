@@ -76,7 +76,7 @@ services:
       - TZ=$TZ
       - PUID=$PUID
       - PGID=$PGID
-      VERSION: docker
+      - VERSION=docker
     volumes:
       - ${DATADIR}/plex:/config
 #      - /example/Movies:/media/Movies
@@ -217,6 +217,6 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ${DATADIR}/portainer/config:/data
+      - ${DATADIR}/portainer/data:/data
     ports:
       - ${PORTAINER_PORT}:9000
