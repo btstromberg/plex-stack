@@ -123,3 +123,9 @@ sudo docker compose up --detach
 All of these programs needs to be configured, which is outside the scope of this guide. [TRaSH-Guides](https://trash-guides.info/) has great detailed guides for setting everything up.
 
 Almost all of them are configured via web GUIs. Organizr is a great tool that can be used to organize all links into a single web portal. Each web gui is bound to it's own port on the host in this example, using unencrypted http. Therefore they should not be reachable from the internet via port forwarding. A reverse proxy can be used to proxy all traffic to each service with domain names, HTTPS, additional authentication etc. Traefik is the proxy I prefer, but setting it up is something that is also outside the scope of this guide at the moment.
+
+### Troubleshooting
+
+Portainer is a great graphical tool that you can use to manage/monitor your containers. It can be reached via http://ipofserver:9000/. You will have to create a password for the admin account, then you should see your environment under home. Here you can read logs, restart containers, recreate, remove etc.
+
+Indentation is also important when working with .yml files, usually docker compose will be able to tell you which line is wrong but incorrect indentation can lead to unexpected/weird errors so watch out for that when copying/pasting stuff for example.
