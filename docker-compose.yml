@@ -2,12 +2,6 @@ version: "3.9"
 
 ################################ EXTENSION FIELDS ################################
 
-# Timezone and user/group ID
-
-x-environment: &default-tz-puid-pgid
-  - TZ=$TZ
-  - PUID=$PUID
-  - PGID=$PGID
 
 # For services that should automatically restart on failure
 
@@ -51,7 +45,7 @@ services:
     volumes:
       - ${DATADIR}/sonarr:/config
     ports:
-      - 8989:8989
+      - ${SONARR_PORT}:8989
 
 #---------------- RADARR ------------------#
 
@@ -68,7 +62,7 @@ services:
 #      - /example/Movies:/media/Movies
 #      - /example/TV:/media/TV
     ports:
-      - 7878:7878
+      - ${RADARR_PORT}:7878
 
 #---------------- PLEX ------------------#
 
@@ -103,7 +97,8 @@ services:
     volumes:
       - ${DATADIR}/qbittorrent/config:/config
     restart: unless-stopped
-
+    ports:
+      - ${QBITTORRENT_PORT}:8080
 
 #---------------- OVERSEERR ------------------#
 
@@ -116,7 +111,7 @@ services:
       - PUID=$PUID
       - PGID=$PGID
     ports:
-      - 5055:5055
+      - ${OVERSEERR_PORT}:5055
     volumes:
       - ${DATADIR}/overseerr/config:/app/config
 
@@ -134,7 +129,7 @@ services:
     volumes:
       - ${DATADIR}/tautulli:/config
     ports:
-      - 8181:8181
+      - ${TAUTULLI_PORT}:8181
 
 #---------------- BAZARR ------------------#
 
@@ -152,7 +147,7 @@ services:
 #      - /opt/docker/data:/media
 #      - /data1/Allt/Serier:/tv #optional
     ports:
-      - 6767:6767
+      - ${BAZARR_PORT}:6767
     restart: unless-stopped
 
 #---------------- PROWLARR ------------------#
@@ -168,7 +163,7 @@ services:
     volumes:
       - ${DATADIR}/prowlarr/config:/config
     ports:
-      - 9696:9696
+      - ${PROWLARR_PORT}:9696
     restart: unless-stopped
 
 #----------- PLEX META MANAGER -------------#
@@ -204,7 +199,7 @@ services:
       - fpm=true
       - branch=v2-master
     ports:
-      - '60800:80'
+      - '${ORGANIZR_PORT}:80'
     image: organizr/organizr:latest
 
 #---------------- Portainer ------------------#
@@ -224,5 +219,4 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${DATADIR}/portainer/config:/data
     ports:
-      - 8000:8000
-      - 9000:9000
+      - ${PORTAINER_PORT}:9000
