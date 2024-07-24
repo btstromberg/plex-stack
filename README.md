@@ -1,8 +1,16 @@
 # Plex Stack
 
-This is a complete Plex setup using Docker, with all the necessary tools for automating download/organization of libraries etc.
+## Intruduction
 
-#### Software Used
+This is a complete Plex setup guide using Docker, with all the necessary tools for automating download/organization of libraries etc.
+
+#### Why use Docker?
+
+Docker runs software in containers, each container has it's own file system where the software is installed, together with any dependencies, services etc in a separate standardized environment that can be run on basically any server. 
+
+If I want to migrate my containers to a new server, all I have to do is copy a single folder (containing the compose config file and the data directory for the containers) to the new server, install docker on it and run the compose commmand, and I don't have to install anything at all really.
+
+### Software Used
 - [Plex Media Server](https://github.com/linuxserver/docker-plex)
 - [Sonarr](https://github.com/Sonarr/Sonarr) - TV Shows automation/organizing/file management
 - [Radarr](https://github.com/Radarr/Radarr) - Movies automation/organizing/file management
@@ -40,9 +48,9 @@ Once you know you have a public IP, you need to open a port to your servers loca
 ### Software installation
 
 #### Docker Engine
-Visit https://docs.docker.com/engine/install/ for details on how to install Docker on your distribution.
+Visit https://docs.docker.com/engine/install/ for details on how to install Docker on your distribution. If you are using Debian, take a look at the TLDR guide at the end.
 
-This configuration 
+This configuration uses extension fields and environment variables which can be a bit confusing if you are new to Docker, but it really helps keeping everything organized and standardized, especially when expanding with more containers in the future.
 
 1. Clone the repo:
 <br><br>
@@ -61,17 +69,23 @@ nano .env
 
 3. Change the config according to your needs. The last line is for the Plex token, keep in mind that it is only valid for 4 minutes after generation (you can generate a new one if it expires too quickly)
 
-4. Start the stack:
+4. Start the stack.:
 
 ```
 docker compose -f /opt/plex-stack/docker-compose.yml up --detach
+```
+
+And remove the included example env file:
+
+```
+rm .env.example
 ```
 
 5. Go to `http://localipofserver:32400/web` and log in with your Plex account to claim the server
 
 6. Go to Settings > Remote Access and verify connectivity (green lock)
 
-## TLDR installation (Debian 12)
+## TLDR installation guide (Debian 12)
 
 ```
 su root
