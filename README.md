@@ -129,3 +129,15 @@ Almost all of them are configured via web GUIs. Organizr is a great tool that ca
 Portainer is a great graphical tool that you can use to manage/monitor your containers. It can be reached via http://ipofserver:9000/. You will have to create a password for the admin account, then you should see your environment under home. Here you can read logs, restart containers, recreate, remove etc.
 
 Indentation is also important when working with .yml files, usually docker compose will be able to tell you which line is wrong but incorrect indentation can lead to unexpected/weird errors so watch out for that when copying/pasting stuff for example.
+
+If your server says it's unavailable remotely, it's probably due to one of these things:
+
+* You are behind a CGNAT connection, which means you share one public IP with many others, and can't forward ports yourself. CGNAT addresses start with 100. Some ISPs can give you a real public IP if you request it, often for free.
+
+* You have not forwarded ports correctly. Check your routers port forwarding settings.
+
+* You are double NATed. You sit behind a router, which has it's WAN port connected to another router (sometimes the ISPs depending on country).
+
+You can easily test port connectivity using telnet. [Here](https://kb.synology.com/vi-vn/DSM/tutorial/Whether_TCP_port_is_open_or_closed) is a link explaining how to do it.
+
+If telnet can connect directly to the servers local IP on TCP 32400, the issue is probably the router settings, either your own or some upstream ISP router.
