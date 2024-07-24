@@ -1,11 +1,25 @@
 # Plex Stack
 
-This is a complete Plex setup using Docker, with all the necessary tools for automating download/organization of libraries. Overseerr is used for user requests, and Tautulli for monitoring usage.
+This is a complete Plex setup using Docker, with all the necessary tools for automating download/organization of libraries etc.
+
+#### Software Used
+- [Plex Media Server](https://github.com/linuxserver/docker-plex)
+- [Sonarr](https://github.com/Sonarr/Sonarr) - TV Shows automation/organizing/file management
+- [Radarr](https://github.com/Radarr/Radarr) - Movies automation/organizing/file management
+- [Tautulli](https://github.com/Tautulli/Tautulli) - Plex usage/performance monitoring system
+- [Organizr](https://github.com/causefx/Organizr) - Single web portal that embeds other web UI's, such as Sonarr, Radarr etc
+- [Portainer](https://github.com/portainer/portainer) - Graphical Docker container management tool
+- [Qbittorrent](https://github.com/qbittorrent/qBittorrent) - Torrent client
+- [Overseerr](https://github.com/sct/overseerr) - Web portal where users can log in with their Plex account and request movies/shows. Plex/Radarr/Sonarr integration
+- [Bazarr](https://github.com/morpheus65535/bazarr) - Automatic subtitle management/download
+- [Prowlarr](https://github.com/Prowlarr/Prowlarr) - Integrates with Radarr/Sonarr to manage their indexer/client settings in one place.
+- [Kometa](https://github.com/Kometa-Team/Kometa) (aka Plex Meta Manager) - Tool for customizing Plex library metadata. For example custom posters, collections, etc.
+
 
 ## Requirements
 
 * Linux
-* Docker
+* Docker (Engine)
 * Public IP address (for external access to Plex)
 
 ## Preparation
@@ -52,3 +66,38 @@ docker compose -f /opt/plex-stack/docker-compose.yml up --detach
 ```
 
 5. Go to `http://localipofserver:32400/web` and log in with your Plex account to claim the server
+
+6. Go to Settings > Remote Access and verify connectivity (green lock)
+
+## TLDR installation (Debian 12)
+
+```
+su root
+apt update
+apt install sudo
+sudo usermod -aG sudo username
+su username
+
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+sudo usermod -aG docker $USER
+
+cd /opt
+sudo git clone https://github.com/btstromberg/plex-stack.git
+cd plex-stack
+sudo mv .env.example .env
+sudo vi .env
+sudo docker compose up --detach
+```
