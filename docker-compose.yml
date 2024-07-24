@@ -45,7 +45,9 @@ services:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     environment:
-      <<: *default-tz-puid-pgid
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
     volumes:
       - ${DATADIR}/sonarr:/config
     ports:
@@ -58,7 +60,9 @@ services:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     environment:
-      <<: *default-tz-puid-pgid
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
     volumes:
       - ${DATADIR}/radarr:/config
 #      - /example/Movies:/media/Movies
@@ -75,7 +79,9 @@ services:
     devices:
      - /dev/dri:/dev/dri
     environment:
-      <<: *default-tz-puid-pgid
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
       VERSION: docker
     volumes:
       - ${DATADIR}/plex:/config
@@ -91,7 +97,9 @@ services:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     environment:
-      <<: *default-tz-puid-pgid
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
     volumes:
       - ${DATADIR}/qbittorrent/config:/config
     restart: unless-stopped
@@ -104,7 +112,9 @@ services:
     image: sctx/overseerr:latest
     container_name: overseerr
     environment:
-      <<: *default-tz-puid-pgid
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
     ports:
       - 5055:5055
     volumes:
@@ -118,7 +128,9 @@ services:
     image: ghcr.io/tautulli/tautulli:latest
     container_name: tautulli
     environment:
-      <<: *default-tz-puid-pgid
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
     volumes:
       - ${DATADIR}/tautulli:/config
     ports:
@@ -129,7 +141,9 @@ services:
   bazarr:
     <<: *common-keys-media # See EXTENSION FIELDS at the top
     environment:
-      <<: *default-tz-puid-pgid
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
     volumes:
@@ -148,7 +162,9 @@ services:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     environment:
-      <<: *default-tz-puid-pgid
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
     volumes:
       - ${DATADIR}/prowlarr/config:/config
     ports:
@@ -162,7 +178,9 @@ services:
     image: lscr.io/linuxserver/plex-meta-manager:latest
     container_name: plex-meta-manager
     environment:
-      <<: *default-tz-puid-pgid
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
       - PMM_CONFIG=/config/config.yml #optional
       - PMM_TIME=03:00 #optional
       - PMM_RUN=True #optional
@@ -180,10 +198,31 @@ services:
     volumes:
       - ${DATADIR}/organizr/config:/config
     environment:
-      - PGID=1000
-      - PUID=1000
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
       - fpm=true
       - branch=v2-master
     ports:
       - '60800:80'
     image: organizr/organizr:latest
+
+#---------------- Portainer ------------------#
+
+  portainer:
+    <<: *common-keys-core
+    environment:
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${DATADIR}/portainer/config:/data
+    ports:
+      - 8000:8000
+      - 9000:9000
