@@ -47,6 +47,22 @@ services:
     ports:
       - ${SONARR_PORT}:8989
 
+#-------------- SONARR 4K ---------------#
+
+  sonarr_4k:
+    <<: *common-keys-media # See EXTENSION FIELDS at the top
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr_4k
+    environment:
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
+    volumes:
+      - ${DATADIR}/sonarr_4k/config:/config
+      - ${TV_4K_FOLDER}:/media/TV_4K
+    ports:
+      - ${SONARR_4K_PORT}:8989
+
 #--------------- RADARR -----------------#
 
   radarr:
@@ -62,6 +78,22 @@ services:
       - ${MOVIES_FOLDER}:/media/Movies
     ports:
       - ${RADARR_PORT}:7878
+
+#-------------- RADARR 4K ---------------#
+
+  radarr_4k:
+    <<: *common-keys-media # See EXTENSION FIELDS at the top
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr_4k
+    environment:
+      - TZ=$TZ
+      - PUID=$PUID
+      - PGID=$PGID
+    volumes:
+      - ${DATADIR}/radarr_4k/config:/config
+      - ${MOVIES_4K_FOLDER}:/media/Movies_4K
+    ports:
+      - ${RADARR_4K_PORT}:7878
 
 #---------------- PLEX ------------------#
 
@@ -80,7 +112,9 @@ services:
     volumes:
       - ${DATADIR}/plex/config:/config
       - ${MOVIES_FOLDER}:/media/Movies
+      - ${MOVIES_4K_FOLDER}:/media/Movies_4K
       - ${TV_FOLDER}:/media/TV
+      - ${TV_4K_FOLDER}:/media/TV_4K
     ports:
       - ${PLEX_PORT}:32400
 
@@ -119,8 +153,7 @@ services:
 #-------------- TAUTULLI ----------------#
 
   tautulli:
-    <<: *common-keys-media
-#    image: lscr.io/linuxserver/tautulli:latest
+    <<: *common-keys-media # See EXTENSION FIELDS at the top
     image: ghcr.io/tautulli/tautulli:latest
     container_name: tautulli
     environment:
@@ -186,7 +219,7 @@ services:
 #-------------- Organizr ----------------#
 
   organizr:
-    <<: *common-keys-core
+    <<: *common-keys-core # See EXTENSION FIELDS at the top
     container_name: organizr
     volumes:
       - ${DATADIR}/organizr/config:/config
@@ -203,7 +236,7 @@ services:
 #------------- Portainer ----------------#
 
   portainer:
-    <<: *common-keys-core
+    <<: *common-keys-core # See EXTENSION FIELDS at the top
     environment:
       - TZ=$TZ
       - PUID=$PUID
