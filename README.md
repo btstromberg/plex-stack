@@ -42,6 +42,8 @@ Once you know you have a public IP, you need to open a port to your servers loca
 #### Docker Engine
 Visit https://docs.docker.com/engine/install/ for details on how to install Docker on your distribution.
 
+This configuration 
+
 1. Clone the repo:
 <br><br>
 ```
@@ -101,3 +103,9 @@ sudo mv .env.example .env
 sudo vi .env
 sudo docker compose up --detach
 ```
+
+### Configuration
+
+All of these programs needs to be configured, which is outside the scope of this guide. [TRaSH-Guides](https://trash-guides.info/) has great detailed guides for setting everything up.
+
+Almost all of them are configured via web GUIs. Organizr is a great tool that can be used to organize all links into a single web portal. Each web gui is bound to it's own port on the host in this example, using unencrypted http. Therefore they should not be reachable from the internet via port forwarding. A reverse proxy can be used to proxy all traffic to each service with domain names, HTTPS, additional authentication etc. Traefik is the proxy I prefer, but setting it up is something that is also outside the scope of this guide at the moment.
