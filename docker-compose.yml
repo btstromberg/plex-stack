@@ -1,0 +1,189 @@
+version: "3.9"
+
+################################ EXTENSION FIELDS ################################
+
+# Timezone and user/group ID
+
+x-environment: &default-tz-puid-pgid
+  - TZ=$TZ
+  - PUID=$PUID
+  - PGID=$PGID
+
+# For services that should automatically restart on failure
+
+x-common-keys-core: &common-keys-core
+  networks:
+    - plex_bridge
+  security_opt:
+    - no-new-privileges:true
+  restart: always
+
+# For services that should NOT automatically restart on failure
+
+x-common-keys-media: &common-keys-media
+  networks:
+    - plex_bridge
+  security_opt:
+    - no-new-privileges:true
+  restart: "no"
+
+#################################### NETWORKS ####################################
+
+networks:
+  plex_bridge:
+    name: plex_bridge
+    driver: bridge
+
+#################################### SERVICES  ###################################
+
+services:
+
+#---------------- SONARR ------------------#
+
+  sonarr:
+    <<: *common-keys-media # See EXTENSION FIELDS at the top
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      <<: *default-tz-puid-pgid
+    volumes:
+      - ${DATADIR}/sonarr:/config
+    ports:
+      - 8989:8989
+
+#---------------- RADARR ------------------#
+
+  radarr:
+    <<: *common-keys-media # See EXTENSION FIELDS at the top
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      <<: *default-tz-puid-pgid
+    volumes:
+      - ${DATADIR}/radarr:/config
+#      - /example/Movies:/media/Movies
+#      - /example/TV:/media/TV
+    ports:
+      - 7878:7878
+
+#---------------- PLEX ------------------#
+
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host
+    devices:
+     - /dev/dri:/dev/dri
+    environment:
+      <<: *default-tz-puid-pgid
+      VERSION: docker
+    volumes:
+      - ${DATADIR}/plex:/config
+#      - /example/Movies:/media/Movies
+#      - /example/TV:/media/TV
+    restart: unless-stopped
+
+
+#---------------- QBITTORRENT ------------------#
+
+  qbittorrent:
+    <<: *common-keys-media # See EXTENSION FIELDS at the top
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      <<: *default-tz-puid-pgid
+    volumes:
+      - ${DATADIR}/qbittorrent/config:/config
+    restart: unless-stopped
+
+
+#---------------- OVERSEERR ------------------#
+
+  overseerr:
+    <<: *common-keys-media # See EXTENSION FIELDS at the top
+    image: sctx/overseerr:latest
+    container_name: overseerr
+    environment:
+      <<: *default-tz-puid-pgid
+    ports:
+      - 5055:5055
+    volumes:
+      - ${DATADIR}/overseerr/config:/app/config
+
+#---------------- TAUTULLI ------------------#
+
+  tautulli:
+    <<: *common-keys-media
+#    image: lscr.io/linuxserver/tautulli:latest
+    image: ghcr.io/tautulli/tautulli:latest
+    container_name: tautulli
+    environment:
+      <<: *default-tz-puid-pgid
+    volumes:
+      - ${DATADIR}/tautulli:/config
+    ports:
+      - 8181:8181
+
+#---------------- BAZARR ------------------#
+
+  bazarr:
+    <<: *common-keys-media # See EXTENSION FIELDS at the top
+    environment:
+      <<: *default-tz-puid-pgid
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    volumes:
+      - ${DATADIR}/bazarr/config:/config
+#      - /data1/Allt:/media #optional
+#      - /opt/docker/data:/media
+#      - /data1/Allt/Serier:/tv #optional
+    ports:
+      - 6767:6767
+    restart: unless-stopped
+
+#---------------- PROWLARR ------------------#
+
+  prowlarr:
+    <<: *common-keys-media # See EXTENSION FIELDS at the top
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      <<: *default-tz-puid-pgid
+    volumes:
+      - ${DATADIR}/prowlarr/config:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+
+#----------- PLEX META MANAGER -------------#
+
+  plex-meta-manager:
+    <<: *common-keys-media # See EXTENSION FIELDS at the top
+    image: lscr.io/linuxserver/plex-meta-manager:latest
+    container_name: plex-meta-manager
+    environment:
+      <<: *default-tz-puid-pgid
+      - PMM_CONFIG=/config/config.yml #optional
+      - PMM_TIME=03:00 #optional
+      - PMM_RUN=True #optional
+      - PMM_TEST=False #optional
+      - PMM_NO_MISSING=False #optional
+    volumes:
+      - ${DATADIR}/plexmetamanager/config:/config
+    restart: unless-stopped
+
+#---------------- Organizr ------------------#
+
+  organizr:
+    <<: *common-keys-core
+    container_name: organizr
+    volumes:
+      - ${DATADIR}/organizr/config:/config
+    environment:
+      - PGID=1000
+      - PUID=1000
+      - fpm=true
+      - branch=v2-master
+    ports:
+      - '60800:80'
+    image: organizr/organizr:latest
